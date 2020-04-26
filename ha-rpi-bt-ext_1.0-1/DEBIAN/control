@@ -1,0 +1,9 @@
+Package: ha-rpi-bt-ext
+Version: 1.0-1
+Section: base
+Priority: optional
+Architecture: i386
+Depends: libsomethingorrather (>= 1.2.13), anotherDependency (>= 1.2.6)
+Maintainer: Andrei Sharafullin <sharafullin@gmail.com>
+Description: This package allow remote connection of bluetooth devices 
+ to Home Assistant through MQTT protocol.
