@@ -16,4 +16,8 @@ client.bind(("", 35224))
 while True:
     # Thanks @seym45 for a fix
     data, addr = client.recvfrom(1024)
-    print("received message: %s" % data)
+    print("received message %s from %s " % (data, addr))
+    if data == b"ha-rpi-bt-ext discovery":
+        #reply
+        print("reply is sent back")
+        client.sendto(b"ha-rpi-bt-ext discovered", (addr[0], 35224))
