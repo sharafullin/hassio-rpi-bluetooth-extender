@@ -1,0 +1,10 @@
+[Unit]
+Description=service
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/usr/bin/sudo /usr/bin/sudo python3 /home/pi/hassio-rpi-bluetooth-extender/udp_client.py
+
+[Install]
+WantedBy=multi-user.target
