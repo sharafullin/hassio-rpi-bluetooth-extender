@@ -1,7 +1,9 @@
 import socket
 import sys
 import netifaces as ni
-from bluepy.btle import Scanner
+from bluepy.btle import Scanner, ScanEntry 
+
+from configuration_manager.climate import Eq3BtSmart
 
 PORT = 35224
 
@@ -36,14 +38,19 @@ def start_tcp_discovery():
                 print("received '%s'" % data)
                 if data:
                     devices = scanner.scan(3.0)
+
                     for dev in devices:
-                        eq3 = False
-                        for (adtype, desc, value) in dev.getScanData():
-                            if desc == "Complete Local Name" and value == "CC-RT-BLE":
-                                eq3 = True
-                                break
-                        if eq3:
-                            resp += dev.addr + ":" + str(dev.rssi) + ";"
+                        eq3 = Eq3BtSmart("homeassistant", ip)
+                        if eq3.exists():
+                            resp += eq3.get_configuration() + ":" + str(dev.rssi) + ";"
+
+                        # eq3 = False
+                        # for (adtype, desc, value) in dev.getScanData():
+                        #     if desc == "Complete Local Name" and value == "CC-RT-BLE":
+                        #         eq3 = True
+                        #         break
+                        # if eq3:
+                        #     resp += dev.addr + ":" + str(dev.rssi) + ";"
                     print("sending data back to the client")
                     connection.sendall(resp.encode())
                 else:
