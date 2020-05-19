@@ -14,9 +14,14 @@ def start_udp_discovery():
     client.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
     client.bind(("", 35224))
+    print("started")
     while True:
+        print("listening")
         # Thanks @seym45 for a fix
         data, addr = client.recvfrom(1024)
+        print("data received")
+        print(data)
+        print(addr)
         if data == b"ha-rpi-bt-ext discovery":
             #reply
             client.sendto(b"ha-rpi-bt-ext discovered", (addr[0], 35224))
