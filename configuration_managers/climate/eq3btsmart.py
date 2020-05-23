@@ -4,7 +4,7 @@ class Eq3BtSmart(IntegrationConfigurator):
     def exists(self) -> bool:
         return self._entry.getValueText(9) == "CC-RT-BLE"
     
-    def get_configuration(self) -> str:
+    def configure(self) -> str:
         result = '''{{
 "name":"Livingroom",
 "mode_cmd_t":"{prefix}/climate/{node}/{obj}/thermostatModeCmd",

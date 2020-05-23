@@ -10,5 +10,5 @@ class IntegrationConfigurator:
     def exists(self) -> bool:
         pass
 
-    def get_configuration(self) -> str:
+    def configure(self) -> str:
         pass

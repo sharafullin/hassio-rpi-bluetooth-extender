@@ -42,7 +42,7 @@ def start_tcp_discovery():
                     for dev in devices:
                         eq3 = Eq3BtSmart("homeassistant", ip, dev)
                         if eq3.exists():
-                            resp += eq3.get_configuration() + ","
+                            resp += dev.addr + "-" + dev.rssi + ";"
 
                         # eq3 = False
                         # for (adtype, desc, value) in dev.getScanData():
