@@ -4,6 +4,14 @@ import redis
 from delayed.queue import Queue
 from delayed.delay import delayed
 
+conn = redis.Redis()
+queue = Queue(name='default', conn=conn)
+delayed = delayed(queue)
+
+@delayed()
+def configure_device(configurator, topic, payload, qos, retain):
+    configurator._mqttc.publish(topic, payload, qos, retain)
+
 class IntegrationConfigurator:
     def __init__(self, prefix, ip, entry):
         self._entry = entry
@@ -16,15 +24,8 @@ class IntegrationConfigurator:
         pass
 
     def configure_device_delayed(self, topic, payload, qos, retain):
-        conn = redis.Redis()
-        queue = Queue(name='default', conn=conn)
-        delayed = delayed(queue)
+        configure_device.timeout(10)(self, topic, payload, qos, retain)
 
-        self.configure_device.timeout(10)(IntegrationConfigurator, topic, payload, qos, retain)
-
-    @delayed()
-    def configure_device(self, topic, payload, qos, retain):
-        self._mqttc.publish(topic, payload, qos, retain)
 
     def configure(self, config):
         self._mqttc.username_pw_set(config.username, config.password)
