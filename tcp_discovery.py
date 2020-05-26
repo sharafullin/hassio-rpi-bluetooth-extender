@@ -7,6 +7,7 @@ from bluepy.btle import Scanner, ScanEntry
 from configuration_managers.climate.eq3btsmart import Eq3BtSmart
 
 PORT = 35224
+devices = []
 
 def start_tcp_discovery():
     ip = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']
@@ -63,7 +64,10 @@ def start_tcp_discovery():
                     config = msg.split("__")
                     mqtt_conf = json.loads(config[2], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
                     print("configuring the device: ", config[1])
-                    eq3 = Eq3BtSmart("homeassistant", ip, config[1])
+                    for dev in devices:
+                        if dev.addr == config[1]:
+                            device = dev
+                    eq3 = Eq3BtSmart("homeassistant", ip, device)
                     if eq3.exists():
                         eq3.configure(config[2])
                     connection.sendall(b'ha-rpi-bt-ext device configured')
