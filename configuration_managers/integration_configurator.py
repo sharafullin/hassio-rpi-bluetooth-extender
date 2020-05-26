@@ -7,7 +7,7 @@ class IntegrationConfigurator:
         self._node = ip.replace(".","_")
         self._object = entry.addr.replace(":","")
         self._prefix = prefix
-        self._mqttc: mqtt.Client = mqtt.Client(protocol=mqtt.MQTTv311)
+        self._mqttc = mqtt.Client(protocol=mqtt.MQTTv311)
 
     def exists(self) -> bool:
         pass
