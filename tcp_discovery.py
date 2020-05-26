@@ -70,7 +70,7 @@ def start_tcp_discovery():
                             device = dev
                     eq3 = Eq3BtSmart("homeassistant", ip, device)
                     if eq3.exists():
-                        eq3.configure(config[2])
+                        eq3.configure(mqtt_conf)
                     connection.sendall(b'ha-rpi-bt-ext device configured')
                 else:
                     print("no more data from", client_address)
