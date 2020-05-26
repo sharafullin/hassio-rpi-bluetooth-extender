@@ -1,5 +1,6 @@
 import socket
 import sys
+import json
 import netifaces as ni
 from bluepy.btle import Scanner, ScanEntry 
 
@@ -36,13 +37,17 @@ def start_tcp_discovery():
                 data = connection.recv(1024)
                 resp = ""
                 print("received '%s'" % data)
-                if data:
+                msg = data.decode()
+                if msg == 'ha-rpi-bt-ext device discovery':
                     devices = scanner.scan(3.0)
 
                     for dev in devices:
+                        print("device:")
+                        print(dev)
                         eq3 = Eq3BtSmart("homeassistant", ip, dev)
                         if eq3.exists():
-                            resp += dev.addr + "-" + dev.rssi + ";"
+                            print("exists")
+                            resp +=";" + dev.addr + "-" + str(dev.rssi) + ";"
 
                         # eq3 = False
                         # for (adtype, desc, value) in dev.getScanData():
@@ -52,7 +57,16 @@ def start_tcp_discovery():
                         # if eq3:
                         #     resp += dev.addr + ":" + str(dev.rssi) + ";"
                     print("sending data back to the client")
-                    connection.sendall(("[" + resp + "]").encode())
+                    print("data:", resp[:-1])
+                    connection.sendall((resp[:-1]).encode())
+                elif msg.startswith('ha-rpi-bt-ext device configure'):
+                    config = msg.split("__")
+                    mqtt_conf = json.loads(config[2], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+                    print("configuring the device: ", config[1])
+                    eq3 = Eq3BtSmart("homeassistant", ip, config[1])
+                    if eq3.exists():
+                        eq3.configure(config[2])
+                    connection.sendall(b'ha-rpi-bt-ext device configured')
                 else:
                     print("no more data from", client_address)
                     break
