@@ -12,7 +12,7 @@ class IntegrationConfigurator:
     def exists(self) -> bool:
         pass
 
-    def configure(self, config) -> str:
+    def configure(self, config):
         self._mqttc.username_pw_set(config.username, config.password)
 
         self._mqttc.on_connect = self._mqtt_on_connect

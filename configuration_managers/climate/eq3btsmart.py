@@ -5,9 +5,11 @@ class Eq3BtSmart(IntegrationConfigurator):
     def exists(self) -> bool:
         return self._entry.getValueText(9) == "CC-RT-BLE"
     
-    def configure(self, config) -> str:
+    def configure(self, config):
         super(Eq3BtSmart, self).configure(config)
-        result = '''{{
+
+        topic = "{prefix}/climate/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
+        payload_template = '''{{
 "name":"Livingroom",
 "mode_cmd_t":"{prefix}/climate/{node}/{obj}/thermostatModeCmd",
 "mode_stat_t":"{prefix}/climate/{node}/{obj}/state",
@@ -23,9 +25,8 @@ class Eq3BtSmart(IntegrationConfigurator):
 "min_temp":"15",
 "max_temp":"25",
 "temp_step":"0.5",
-"modes":["off", "heat"],'\
-'"rssi":"{rssi}",'\
-'"id":"{obj}"'\
+"modes":["off", "heat"]'\
 }}'''
-        return result.format(prefix = self._prefix, node = self._node, obj = self._object, rssi = self._entry.rssi)
+        payload = payload_template.format(prefix = self._prefix, node = self._node, obj = self._object)
+        self._mqttc.publish(topic, payload, 1, False)
 
