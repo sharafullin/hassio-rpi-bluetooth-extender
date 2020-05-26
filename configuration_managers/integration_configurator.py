@@ -1,5 +1,8 @@
 from bluepy.btle import ScanEntry
 import paho.mqtt.client as mqtt
+import redis
+from delayed.queue import Queue
+from delayed.delay import delayed
 
 class IntegrationConfigurator:
     def __init__(self, prefix, ip, entry):
@@ -11,6 +14,17 @@ class IntegrationConfigurator:
 
     def exists(self) -> bool:
         pass
+
+    def configure_device_delayed(self, topic, payload, qos, retain):
+        conn = redis.Redis()
+        queue = Queue(name='default', conn=conn)
+        delayed = delayed(queue)
+
+        self.configure_device.timeout(10)(IntegrationConfigurator, topic, payload, qos, retain)
+
+    @delayed()
+    def configure_device(self, topic, payload, qos, retain):
+        self._mqttc.publish(topic, payload, qos, retain)
 
     def configure(self, config):
         self._mqttc.username_pw_set(config.username, config.password)
