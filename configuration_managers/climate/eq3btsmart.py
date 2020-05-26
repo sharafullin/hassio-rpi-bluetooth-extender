@@ -1,10 +1,12 @@
 from configuration_managers.integration_configurator import IntegrationConfigurator
+import paho.mqtt.client as mqtt
 
 class Eq3BtSmart(IntegrationConfigurator):
     def exists(self) -> bool:
         return self._entry.getValueText(9) == "CC-RT-BLE"
     
-    def configure(self) -> str:
+    def configure(self, config) -> str:
+        super(Eq3BtSmart, self).configure(config)
         result = '''{{
 "name":"Livingroom",
 "mode_cmd_t":"{prefix}/climate/{node}/{obj}/thermostatModeCmd",
