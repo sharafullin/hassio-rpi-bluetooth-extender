@@ -1,6 +1,7 @@
 import socket
 import sys
 import json
+from collections import namedtuple
 import netifaces as ni
 from bluepy.btle import Scanner, ScanEntry 
 
