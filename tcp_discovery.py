@@ -8,7 +8,11 @@ from configuration_managers.climate.eq3btsmart import Eq3BtSmart
 PORT = 35224
 devices = []
 
-def start_tcp_discovery():
+def test():
+    print('test')
+
+def start_tcp_discovery(sched: sched.scheduler):
+    sched.enter(1, 1, test)
     ip = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']
 
     # Create a TCP/IP socket
