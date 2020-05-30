@@ -11,7 +11,7 @@ def heartbeat():
     print(time.time(), "heartbeat")
 
     while not q.empty():
-        dev: IntegrationConfigurator = q.get(timeout=0.5)
+        dev = q.get(timeout=0.5)
         print("dev:", dev._object)
 
     s.enter(3, 1, heartbeat)
