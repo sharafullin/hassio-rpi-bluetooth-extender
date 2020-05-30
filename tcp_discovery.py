@@ -9,9 +9,10 @@ PORT = 35224
 devices = []
 
 def test():
-    print('test')
+    print('test1')
 
 def start_tcp_discovery(sched: sched.scheduler):
+    print('test2')
     sched.enter(1, 1, test)
     ip = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']
 
