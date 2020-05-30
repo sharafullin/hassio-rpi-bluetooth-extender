@@ -5,6 +5,11 @@ import delayed_queue
 
 import time, sched
 
+def heartbeat():
+    print(time.time(), "heartbeat")
+    s.enter(3, 1, heartbeat)
+
+
 udp_discovery_process = Process(target=udp_discovery.start_udp_discovery)
 udp_discovery_process.start()
 
@@ -22,6 +27,3 @@ udp_discovery_process.join()
 tcp_discovery_process.join()
 delayed_process.join()
 
-def heartbeat():
-    print(time.time(), "heartbeat")
-    s.enter(3, 1, heartbeat)
