@@ -67,7 +67,7 @@ def start_tcp_discovery(queue: Queue):
                     eq3 = Eq3BtSmart("homeassistant", ip, device)
                     if eq3.exists():
                         #eq3.configure(mqtt_conf)
-                        queue.put(type("obj", (object,), {"mac" : config[1], "config": mqtt_conf))
+                        queue.put(msg[msg.index("__") + 1:])
                     connection.sendall(b'ha-rpi-bt-ext device configured')
                 else:
                     print("no more data from", client_address)

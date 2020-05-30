@@ -3,7 +3,8 @@ import udp_discovery
 import tcp_discovery
 import delayed_queue
 from configuration_managers.integration_configurator import IntegrationConfigurator
-import time, sched
+import time, sched, json
+from collections import namedtuple
 from bluepy.btle import Scanner, ScanEntry 
 
 q = Queue()
@@ -13,14 +14,16 @@ def heartbeat():
     print(time.time(), "heartbeat")
 
     while not q.empty():
-        dev = q.get(timeout=0.5)
-        print("dev mac:", dev.mac)
-        print("dev config:", dev.config)
+        data = q.get(timeout=0.5)
+        config = data.split("__")
+        mqtt_conf = json.loads(config[1], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+        print("dev mac:", config[0])
+        print("dev config:", config[1])
         devices = scanner.scan(3.0)
         for device in devices:
-            if device.addr == dev.mac:
-                eq3 = Eq3BtSmart("homeassistant", ip, dev)
-                eq3.configure(dev.config)
+            if device.addr == config[0]:
+                eq3 = Eq3BtSmart("homeassistant", ip, device)
+                eq3.configure(mqtt_conf)
     s.enter(3, 1, heartbeat)
 
 s = sched.scheduler(time.time, time.sleep)
