@@ -10,11 +10,9 @@ q = Queue()
 def heartbeat():
     print(time.time(), "heartbeat")
 
-    try:
+    while not q.empty():
         dev = q.get(timeout=0.5)
         print("dev:", dev)
-    except Queue.empty:
-        print("empty")
 
     s.enter(3, 1, heartbeat)
 
