@@ -4,16 +4,23 @@ import tcp_discovery
 import delayed_queue
 from configuration_managers.integration_configurator import IntegrationConfigurator
 import time, sched
+from bluepy.btle import Scanner, ScanEntry 
 
 q = Queue()
+scanner = Scanner()
 
 def heartbeat():
     print(time.time(), "heartbeat")
 
     while not q.empty():
         dev = q.get(timeout=0.5)
-        print("dev:", dev._object)
-
+        print("dev mac:", dev.mac)
+        print("dev config:", dev.config)
+        devices = scanner.scan(3.0)
+        for device in devices:
+            if device.addr == dev.mac:
+                eq3 = Eq3BtSmart("homeassistant", ip, dev)
+                eq3.configure(dev.config)
     s.enter(3, 1, heartbeat)
 
 s = sched.scheduler(time.time, time.sleep)
