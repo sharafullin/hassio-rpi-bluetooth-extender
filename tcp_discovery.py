@@ -57,17 +57,8 @@ def start_tcp_discovery(queue: Queue):
                     print("sending data back to the client")
                     print("data:", resp[:-1])
                     connection.sendall((resp[:-1]).encode())
-                elif msg.startswith('ha-rpi-bt-ext device configure'):
-                    config = msg.split("__")
-                    mqtt_conf = json.loads(config[2], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-                    print("configuring the device: ", config[1])
-                    for dev in devices:
-                        if dev.addr == config[1]:
-                            device = dev
-                    eq3 = Eq3BtSmart("homeassistant", ip, device)
-                    if eq3.exists():
-                        #eq3.configure(mqtt_conf)
-                        queue.put(msg[msg.index("__") + 1:])
+                elif msg.startswith('ha-rpi-bt-ext device configure:'):
+                    queue.put(msg[msg.index(":") + 1:])
                     connection.sendall(b'ha-rpi-bt-ext device configured')
                 else:
                     print("no more data from", client_address)

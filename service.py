@@ -15,15 +15,14 @@ def heartbeat():
 
     while not q.empty():
         data = q.get(timeout=0.5)
-        config = data.split("__")
-        mqtt_conf = json.loads(config[1], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-        print("dev mac:", config[0])
-        print("dev config:", config[1])
+        conf = json.loads(config[1], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+        print("dev mac:", conf.mac)
+        print("dev config:", conf.configuration)
         devices = scanner.scan(3.0)
         for device in devices:
-            if device.addr == config[0]:
+            if device.addr == conf.mac:
                 eq3 = Eq3BtSmart("homeassistant", ip, device)
-                eq3.configure(mqtt_conf)
+                eq3.configure(conf.configuration)
     s.enter(3, 1, heartbeat)
 
 s = sched.scheduler(time.time, time.sleep)
