@@ -1,6 +1,4 @@
-import socket
-import sys
-import json
+import socket, sys, json, time, sched
 from collections import namedtuple
 import netifaces as ni
 from bluepy.btle import Scanner, ScanEntry 
