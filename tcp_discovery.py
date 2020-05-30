@@ -4,6 +4,7 @@ import netifaces as ni
 from bluepy.btle import Scanner, ScanEntry 
 
 from configuration_managers.climate.eq3btsmart import Eq3BtSmart
+from multiprocessing import Queue
 
 PORT = 35224
 devices = []
@@ -11,9 +12,16 @@ devices = []
 def test():
     print('test1')
 
-def start_tcp_discovery(sched: sched.scheduler):
-    print('test2')
-    sched.enter(1, 1, test)
+def start_tcp_discovery(queue: Queue):
+    queue.put("test1")
+    time.sleep(10)
+    queue.put("test2")
+    time.sleep(10)
+    queue.put("test3")
+    time.sleep(10)
+    queue.put("test4")
+    time.sleep(10)
+    queue.put("test5")
     ip = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']
 
     # Create a TCP/IP socket
