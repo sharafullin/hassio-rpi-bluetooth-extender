@@ -2,7 +2,7 @@ from multiprocessing import Process, Queue
 import udp_discovery
 import tcp_discovery
 import delayed_queue
-
+from configuration_managers.integration_configurator import IntegrationConfigurator
 import time, sched
 
 q = Queue()
@@ -11,8 +11,8 @@ def heartbeat():
     print(time.time(), "heartbeat")
 
     while not q.empty():
-        dev = q.get(timeout=0.5)
-        print("dev:", dev)
+        dev: IntegrationConfigurator = q.get(timeout=0.5)
+        print("dev:", dev._object)
 
     s.enter(3, 1, heartbeat)
 

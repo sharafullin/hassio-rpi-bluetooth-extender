@@ -9,19 +9,7 @@ from multiprocessing import Queue
 PORT = 35224
 devices = []
 
-def test():
-    print('test1')
-
 def start_tcp_discovery(queue: Queue):
-    queue.put("test1")
-    time.sleep(10)
-    queue.put("test2")
-    time.sleep(10)
-    queue.put("test3")
-    time.sleep(10)
-    queue.put("test4")
-    time.sleep(10)
-    queue.put("test5")
     ip = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']
 
     # Create a TCP/IP socket
@@ -82,6 +70,7 @@ def start_tcp_discovery(queue: Queue):
                     eq3 = Eq3BtSmart("homeassistant", ip, device)
                     if eq3.exists():
                         eq3.configure(mqtt_conf)
+                        queue.put(eq3)
                     connection.sendall(b'ha-rpi-bt-ext device configured')
                 else:
                     print("no more data from", client_address)
