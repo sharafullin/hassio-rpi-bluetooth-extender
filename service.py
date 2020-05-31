@@ -6,16 +6,20 @@ from configuration_managers.integration_configurator import IntegrationConfigura
 import time, sched, json
 from collections import namedtuple
 from bluepy.btle import Scanner, ScanEntry 
+from configuration_managers.climate.eq3btsmart import Eq3BtSmart
+import netifaces as ni
 
 q = Queue()
 scanner = Scanner()
 
 def heartbeat():
     print(time.time(), "heartbeat")
+    ip = ni.ifaddresses('wlan0')[ni.AF_INET][0]['addr']
 
     while not q.empty():
         data = q.get(timeout=0.5)
-        conf = json.loads(config[1], object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+        print("data: ", data)
+        conf = json.loads(data, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
         print("dev mac:", conf.mac)
         print("dev config:", conf.configuration)
         devices = scanner.scan(3.0)
