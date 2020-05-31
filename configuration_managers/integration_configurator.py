@@ -28,11 +28,6 @@ class IntegrationConfigurator:
 
         self._mqttc.connect(config.broker, config.port, True)
 
-        publish.single(topic, payload=payload, qos=0, retain=False, hostname=mqtt_broker, port=mqtt_port, client_id='', keepalive=60, will=None, tls=None, protocol=mqtt.MQTTv311, auth = {"username":mqtt_username, "password":mqtt_password})
-
-
-        print('mqtt connected!')
-
     def _mqtt_on_connect(self, _mqttc, _userdata, _flags, result_code: int) -> None:
         """On connect callback.
 
