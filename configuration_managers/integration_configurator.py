@@ -28,6 +28,10 @@ class IntegrationConfigurator:
 
         self._mqttc.connect(config.broker, config.port, True)
 
+    @property
+    def device(self):
+        return self._device
+        
     def _mqtt_on_connect(self, _mqttc, _userdata, _flags, result_code: int) -> None:
         """On connect callback.
 

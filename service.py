@@ -6,11 +6,13 @@ from configuration_managers.integration_configurator import IntegrationConfigura
 import time, sched, json
 from collections import namedtuple
 from bluepy.btle import Scanner, ScanEntry 
-from configuration_managers.climate.eq3btsmart import Eq3BtSmart
+from configuration_managers.climate.eq3btsmart import Eq3BtSmartConfig
 import netifaces as ni
 
 q = Queue()
 scanner = Scanner()
+
+devices = []
 
 def heartbeat():
     print(time.time(), "heartbeat")
@@ -22,12 +24,15 @@ def heartbeat():
         conf = json.loads(data, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
         print("dev mac:", conf.mac)
         print("dev config:", conf.configuration)
-        devices = scanner.scan(3.0)
-        for device in devices:
-            if device.addr == conf.mac:
-                eq3 = Eq3BtSmart("homeassistant", ip, device)
-                eq3.configure(conf.configuration)
+        found_devices = scanner.scan(3.0)
+        for found_device in found_devices:
+            if found_device.addr == conf.mac:
+                device = Eq3BtSmartConfig("homeassistant", ip, found_device)
+                device.configure(conf.configuration)
+                devices.append(device)
     s.enter(3, 1, heartbeat)
+    for device in devices:
+        print("available: ", device.device().available())
 
 s = sched.scheduler(time.time, time.sleep)
 s.enter(3, 1, heartbeat)

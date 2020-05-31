@@ -1,5 +1,6 @@
 from configuration_managers.integration_configurator import IntegrationConfigurator
 import paho.mqtt.client as mqtt
+from integrations.climate.eq3btsmart import EQ3BTSmartThermostat
 
 class Eq3BtSmart(IntegrationConfigurator):
     def exists(self) -> bool:
@@ -30,4 +31,5 @@ class Eq3BtSmart(IntegrationConfigurator):
 }}'''
         payload = payload_template.format(prefix = self._prefix, node = self._node, obj = self._object)
         self._mqttc.publish(topic, payload=payload, qos=1, retain=False)
+        self._device = EQ3BTSmartThermostat(self._entry.addr, self._entry.addr)
 
