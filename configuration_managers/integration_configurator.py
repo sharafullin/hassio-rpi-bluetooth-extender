@@ -1,33 +1,7 @@
 import time
 from bluepy.btle import ScanEntry
 import paho.mqtt.client as mqtt
-import redis
-from delayed.queue import Queue
-from delayed.delay import delayed
 import paho.mqtt.publish as publish
-
-conn = redis.Redis()
-queue = Queue(name='default', conn=conn)
-delayed = delayed(queue)
-
-@delayed()
-def configure_device(mqtt_broker, mqtt_port, mqtt_username, mqtt_password, topic, payload, qos, retain):
-    print("your delayed code is here!!!")
-    time.sleep(5)
-    print("execute")
-    print("broker: ", mqtt_broker)
-    print("port: ", mqtt_port)
-    print("username: ", mqtt_username)
-    print("password: ", mqtt_password)
-    print("topic: ", topic)
-    print("payload: ", payload)
-
-    try:
-#        publish.single("homeassistant/climate/192_168_2_6/001a2213896b/config", payload='{"name":"Livingroom","unique_id":"001a2213896b","mode_cmd_t":"homeassistant/climate/192_168_2_6/001a2213896b/thermostatModeCmd","mode_stat_t":"homeassistant/climate/192_168_2_6/001a2213896b/state","mode_stat_tpl":"","avty_t":"homeassistant/climate/192_168_2_6/001a2213896b/available","pl_avail":"online","pl_not_avail":"offline","temp_cmd_t":"homeassistant/climate/192_168_2_6/001a2213896b/targetTempCmd","temp_stat_t":"homeassistant/climate/192_168_2_6/001a2213896b/state","temp_stat_tpl":"","curr_temp_t":"homeassistant/climate/192_168_2_6/001a2213896b/state","curr_temp_tpl":"","min_temp":"15","max_temp":"25","temp_step":"0.5","modes":["off", "heat"]}', qos=0, retain=False, hostname="192.168.2.90", port=2883, client_id="", keepalive=60, will=None, tls=None, protocol=mqtt.MQTTv311, auth = {"username":"user", "password":"passwd"})
-        publish.single(topic, payload=payload, qos=0, retain=False, hostname=mqtt_broker, port=mqtt_port, client_id='', keepalive=60, will=None, tls=None, protocol=mqtt.MQTTv311, auth = {"username":mqtt_username, "password":mqtt_password})
-    except:
-        print("error")
-
 
 class IntegrationConfigurator:
     def __init__(self, prefix, ip, entry):
@@ -39,11 +13,6 @@ class IntegrationConfigurator:
 
     def exists(self) -> bool:
         pass
-
-    def configure_device_delayed(self, topic, payload, qos, retain):
-        print('delayed is calling')
-        configure_device.delay(self._mqtt_broker, self._mqtt_port, self._mqtt_username, self._mqtt_password, topic, payload, qos, retain)
-        print('delayed is called')
 
     def configure(self, config):
         self._mqtt_username = config.username
@@ -58,6 +27,9 @@ class IntegrationConfigurator:
         self._mqttc.on_message = self._mqtt_on_message
 
         self._mqttc.connect(config.broker, config.port, True)
+
+        publish.single(topic, payload=payload, qos=0, retain=False, hostname=mqtt_broker, port=mqtt_port, client_id='', keepalive=60, will=None, tls=None, protocol=mqtt.MQTTv311, auth = {"username":mqtt_username, "password":mqtt_password})
+
 
         print('mqtt connected!')
 

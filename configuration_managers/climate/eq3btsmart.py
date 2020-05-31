@@ -29,5 +29,5 @@ class Eq3BtSmart(IntegrationConfigurator):
 "modes":["off", "heat"]
 }}'''
         payload = payload_template.format(prefix = self._prefix, node = self._node, obj = self._object)
-        super(Eq3BtSmart, self).configure_device_delayed(topic, payload, 1, False)
+        self._mqttc.publish(topic, payload=payload, qos=1, retain=False)
 
