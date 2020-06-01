@@ -16,7 +16,6 @@ from homeassistant.components.climate.const import (
     PRESET_NONE,
     SUPPORT_PRESET_MODE,
     SUPPORT_TARGET_TEMPERATURE,
-    SUPP
 )
 from homeassistant.const import (
     ATTR_TEMPERATURE,

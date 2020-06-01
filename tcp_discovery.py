@@ -3,7 +3,7 @@ from collections import namedtuple
 import netifaces as ni
 from bluepy.btle import Scanner, ScanEntry 
 
-from configuration_managers.climate.eq3btsmart import Eq3BtSmart
+from configuration_managers.climate.eq3btsmart import Eq3BtSmartConfig
 from multiprocessing import Queue
 
 PORT = 35224
@@ -43,7 +43,7 @@ def start_tcp_discovery(queue: Queue):
                     devices = scanner.scan(3.0)
 
                     for dev in devices:
-                        eq3 = Eq3BtSmart("homeassistant", ip, dev)
+                        eq3 = Eq3BtSmartConfig("homeassistant", ip, dev)
                         if eq3.exists():
                             resp +=";" + dev.addr + "-" + str(dev.rssi) + ";"
 

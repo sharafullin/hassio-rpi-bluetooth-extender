@@ -1,13 +1,13 @@
 from configuration_managers.integration_configurator import IntegrationConfigurator
 import paho.mqtt.client as mqtt
-from integrations.climate.eq3btsmart.climate import EQ3BTSmartThermostat
+from integrations.climate import EQ3BTSmartThermostat
 
-class Eq3BtSmartConfig(IntegrationConfigurator):
+class Eq3BtSmart(IntegrationConfigurator):
     def exists(self) -> bool:
         return self._entry.getValueText(9) == "CC-RT-BLE"
     
     def configure(self, config):
-        super(Eq3BtSmartConfig, self).configure(config)
+        super(Eq3BtSmart, self).configure(config)
 
         topic = "{prefix}/climate/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
         payload_template = '''{{
