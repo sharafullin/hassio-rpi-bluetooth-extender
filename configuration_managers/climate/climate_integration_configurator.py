@@ -12,7 +12,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         topic = "{prefix}/climate/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
         payload_template = {
             "name":"{obj}",
-            "unique_id":"{obj}"
+            "unique_id":"{obj}",
             "mode_cmd_t":"{prefix}/climate/{node}/{obj}/mode_cmd_t",
             "mode_stat_t":"{prefix}/climate/{node}/{obj}/state",
             "mode_stat_tpl":"{{ value_json.mode }}",

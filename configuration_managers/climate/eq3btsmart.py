@@ -1,5 +1,5 @@
 import json
-from configuration_managers.integration_configurator.climate import ClimateIntegrationConfigurator
+from .climate_integration_configurator import ClimateIntegrationConfigurator
 import paho.mqtt.client as mqtt
 from integrations.climate.eq3btsmart.climate import EQ3BTSmartThermostat
 
