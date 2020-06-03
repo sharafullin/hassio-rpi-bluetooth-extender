@@ -40,4 +40,5 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         payload["mode"] = self.device.hvac_mode
         payload["target_temp"] = self.device.target_temperature
         payload["current_temp"] = self.device.current_temperature
-        self._mqttc.publish(topic, payload=payload, qos=1, retain=False)
+        payload_json = json.dumps(payload_template)
+        self._mqttc.publish(topic, payload=payload_json, qos=1, retain=False)
