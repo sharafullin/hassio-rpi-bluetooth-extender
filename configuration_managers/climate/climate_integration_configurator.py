@@ -35,6 +35,9 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
 
     def refresh(self):
         self.device.update()
+        topic = "{prefix}/climate/{node}/{obj}/available".format(prefix = self._prefix, node = self._node, obj = self._object)
+        self._mqttc.publish(topic, payload="online", qos=1, retain=False)
+
         topic = "{prefix}/climate/{node}/{obj}/state".format(prefix = self._prefix, node = self._node, obj = self._object)
         payload = {}
         payload["mode"] = self.device.hvac_mode
