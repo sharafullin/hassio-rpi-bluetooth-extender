@@ -1,2 +1,5 @@
 Build package with the following command:
     dpkg-deb --build ha-rpi-bt-ext_1.0-1
+
+Python 3.7 on raspberry pi
+    https://installvirtual.com/install-python-3-7-on-raspberry-pi/
