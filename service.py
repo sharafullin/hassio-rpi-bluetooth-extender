@@ -32,6 +32,8 @@ def heartbeat():
     s.enter(5, 1, heartbeat)
     for device in devices:
         device.refresh()
+        print("name: ", device.device.name)
+        print("available: ", device.device.available)
 
 s = sched.scheduler(time.time, time.sleep)
 s.enter(3, 1, heartbeat)

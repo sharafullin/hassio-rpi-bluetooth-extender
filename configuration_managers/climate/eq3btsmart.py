@@ -10,8 +10,5 @@ class Eq3BtSmartConfig(ClimateIntegrationConfigurator):
 
     def exists(self) -> bool:
         return self._entry.getValueText(9) == "CC-RT-BLE"
-    
-    def configure(self, config):
-        super(Eq3BtSmartConfig, self).configure(config)
 
 
