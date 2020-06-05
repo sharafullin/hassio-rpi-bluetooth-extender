@@ -20,7 +20,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
             "avty_t":"{prefix}/climate/{node}/{obj}/available",
             "pl_avail":"online",
             "pl_not_avail":"offline",
-            "temp_cmd_t":"{prefix}/climate/{node}/{obj}/targetTempCmd",
+            "temp_cmd_t":"{prefix}/climate/{node}/{obj}/temp_cmd_t",
             "temp_stat_t":"{prefix}/climate/{node}/{obj}/state",
             "temp_stat_tpl":"{{{{ value_json.target_temp }}}}",
             "curr_temp_t":"{prefix}/climate/{node}/{obj}/state",
@@ -35,6 +35,8 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         payload = payload_template_json.format(prefix = self._prefix, node = self._node, obj = self._object)
         print("payload: ", payload)
         self._mqttc.publish(topic, payload=payload, qos=1, retain=False)
+        self.subscribe("{prefix}/climate/{node}/{obj}/mode_cmd_t".format(prefix = self._prefix, node = self._node, obj = self._object))
+        self.subscribe("{prefix}/climate/{node}/{obj}/temp_cmd_t".format(prefix = self._prefix, node = self._node, obj = self._object))
 
     def refresh(self):
         self.device.update()

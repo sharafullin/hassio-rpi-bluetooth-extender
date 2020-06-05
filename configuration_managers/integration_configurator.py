@@ -36,6 +36,9 @@ class IntegrationConfigurator:
     def device(self):
         return self._device
 
+    def subscribe(self, topic):
+        self._mqttc.subscribe(topic)
+
     def _mqtt_on_connect(self, _mqttc, _userdata, _flags, result_code: int) -> None:
         """On connect callback.
 
@@ -72,7 +75,8 @@ class IntegrationConfigurator:
 
     def _mqtt_on_message(self, _mqttc, _userdata, msg) -> None:
         """Message received callback."""
-        self.hass.add_job(self._mqtt_handle_message, msg)
+        print("topic: ", msg.topic)
+        print("payload: ", msg.payload)
 
     def _mqtt_on_disconnect(self, _mqttc, _userdata, result_code: int) -> None:
         """Disconnected callback."""
