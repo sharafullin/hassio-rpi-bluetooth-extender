@@ -28,7 +28,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
             "min_temp":"15",
             "max_temp":"25",
             "temp_step":"0.5",
-            "modes":["off", "heat"]
+            "modes":["off", "heat", "auto"]
             }
         payload_template_json = "{" + json.dumps(payload_template) + "}"
         print("payload_template_json: ", payload_template_json)
