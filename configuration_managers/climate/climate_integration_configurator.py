@@ -10,6 +10,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
 
     def configure(self, config):
         super(ClimateIntegrationConfigurator, self).configure(config)
+        hvac_modes = self._device.hvac_modes
         topic = "{prefix}/climate/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
         payload_template = {
             "name":"{obj}",
@@ -25,10 +26,10 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
             "temp_stat_tpl":"{{{{ value_json.target_temp }}}}",
             "curr_temp_t":"{prefix}/climate/{node}/{obj}/state",
             "curr_temp_tpl":"{{{{ value_json.current_temp }}}}",
-            "min_temp":"15",
-            "max_temp":"25",
-            "temp_step":"0.5",
-            "modes":["off", "heat", "auto"]
+            "min_temp":self._device.min_temp,
+            "max_temp":self._device.max_temp,
+            "temp_step":self._device.precision,
+            "modes":self._device.hvac_modes
             }
         payload_template_json = "{" + json.dumps(payload_template) + "}"
         print("payload_template_json: ", payload_template_json)
@@ -46,7 +47,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         self._mqttc.publish(topic, payload="online", qos=1, retain=False)
 
         topic = "{prefix}/climate/{node}/{obj}/state".format(prefix = self._prefix, node = self._node, obj = self._object)
-        payload = {}
+        payload = self.device.device_state_attributes
         payload["mode"] = self.device.hvac_mode
         payload["target_temp"] = self.device.target_temperature
         payload["current_temp"] = self.device.current_temperature
