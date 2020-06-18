@@ -36,8 +36,9 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         payload = payload_template_json.format(prefix = self._prefix, node = self._node, obj = self._object)
         print("payload: ", payload)
         self._mqttc.publish(topic, payload=payload, qos=1, retain=False)
-        self.subscribe("{prefix}/climate/{node}/{obj}/mode_cmd_t".format(prefix = self._prefix, node = self._node, obj = self._object))
-        self.subscribe("{prefix}/climate/{node}/{obj}/temp_cmd_t".format(prefix = self._prefix, node = self._node, obj = self._object))
+        topic_prefix = "{prefix}/climate/{node}/{obj}/".format(prefix = self._prefix, node = self._node, obj = self._object)
+        self.subscribe(topic_prefix + "mode_cmd_t", lambda x: self.set_mode(x.payload.decode()))
+        self.subscribe(topic_prefix + "temp_cmd_t", lambda x: self.set_temperature(float(x.payload.decode())))
 
     def refresh(self):
         self.device.update()
@@ -55,3 +56,9 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         print("topic: ", topic)
         print("payload: ", payload_json)
         self._mqttc.publish(topic, payload=payload_json, qos=1, retain=False)
+
+    def set_mode(self, mode):
+        self._device.set_hvac_mode(mode)
+
+    def set_temperature(self, temperature):
+        self._device.set_temperature(temperature = float(temperature))

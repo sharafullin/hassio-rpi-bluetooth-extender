@@ -40,7 +40,7 @@ def start_tcp_discovery(queue: Queue):
                 print("received '%s'" % data)
                 msg = data.decode()
                 if msg == 'ha-rpi-bt-ext device discovery':
-                    devices = scanner.scan(3.0)
+                    devices = scanner.scan(10.0)
 
                     for dev in devices:
                         eq3 = Eq3BtSmartConfig("homeassistant", ip, dev)
@@ -57,6 +57,7 @@ def start_tcp_discovery(queue: Queue):
                     print("sending data back to the client")
                     print("data:", resp[:-1])
                     connection.sendall((resp[:-1]).encode())
+                    queue.put("")
                 elif msg.startswith('ha-rpi-bt-ext device configure:'):
                     queue.put(msg[msg.index(":") + 1:])
                     connection.sendall(b'ha-rpi-bt-ext device configured')

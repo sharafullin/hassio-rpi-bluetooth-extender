@@ -20,15 +20,18 @@ def heartbeat():
     while not q.empty():
         data = q.get(timeout=0.5)
         print("data: ", data)
-        conf = json.loads(data, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
-        print("dev mac:", conf.mac)
-        print("dev config:", conf.configuration)
-        found_devices = scanner.scan(3.0)
-        for found_device in found_devices:
-            if found_device.addr == conf.mac:
-                device = Eq3BtSmartConfig("homeassistant", ip, found_device)
-                device.configure(conf.configuration)
-                devices.append(device)
+        if data == "":
+            devices.clear()
+        else:
+            conf = json.loads(data, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
+            print("dev mac:", conf.mac)
+            print("dev config:", conf.configuration)
+            found_devices = scanner.scan(10.0)
+            for found_device in found_devices:
+                if found_device.addr == conf.mac:
+                    device = Eq3BtSmartConfig("homeassistant", ip, found_device)
+                    device.configure(conf.configuration)
+                    devices.append(device)
     s.enter(30, 1, heartbeat)
     for device in devices:
         device.refresh()

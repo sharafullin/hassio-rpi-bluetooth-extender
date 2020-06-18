@@ -10,6 +10,7 @@ class IntegrationConfigurator:
         self._object = entry.addr.replace(":","")
         self._prefix = prefix
         self._mqttc = mqtt.Client(self._object)
+        self._callbacks = {}
 
     def exists(self) -> bool:
         pass
@@ -36,21 +37,11 @@ class IntegrationConfigurator:
     def device(self):
         return self._device
 
-    def subscribe(self, topic):
+    def subscribe(self, topic, callback):
         print("subscribed for: ", topic)
         self._mqttc.subscribe(topic)
+        self._callbacks[topic] = callback
 
     def _mqtt_on_message(self, _mqttc, _userdata, msg) -> None:
         """Message received callback."""
-        print("topic: ", msg.topic)
-        print("payload: ", msg.payload.decode())
-        print("type:", type(msg.payload.decode()))
-        if msg.topic.endswith("mode_cmd_t"):
-            print("preset mode")
-            self._device.set_hvac_mode(msg.payload.decode())
-            print("set mode")
-        elif (str(msg.topic).endswith("temp_cmd_t")):
-            print("preset temp")
-            print("temp: ", float(msg.payload.decode()))
-            self._device.set_temperature(temperature = float(msg.payload.decode()))
-            print("set temp")
+        self._callbacks[msg.topic](msg.payload)
