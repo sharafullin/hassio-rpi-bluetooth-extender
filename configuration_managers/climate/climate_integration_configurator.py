@@ -11,6 +11,10 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
     def configure(self, config):
         super(ClimateIntegrationConfigurator, self).configure(config)
         hvac_modes = self._device.hvac_modes
+        device = {
+            "name":"test" + self._object,
+            "identifiers": self._object
+        }
         topic = "{prefix}/climate/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
         payload_template = {
             "name":"{obj}",
@@ -26,12 +30,11 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
             "temp_stat_tpl":"{{{{ value_json.target_temp }}}}",
             "curr_temp_t":"{prefix}/climate/{node}/{obj}/state",
             "curr_temp_tpl":"{{{{ value_json.current_temp }}}}",
-            "json_attr_t":"{prefix}/climate/{node}/{obj}/state",
-            "json_attr_tpl":"{{ value_json.valve | tojson }}",
             "min_temp":self._device.min_temp,
             "max_temp":self._device.max_temp,
             "temp_step":self._device.precision,
-            "modes":self._device.hvac_modes
+            "modes":self._device.hvac_modes,
+            "device": device
             }
         payload_template_json = "{" + json.dumps(payload_template) + "}"
         print("payload_template_json: ", payload_template_json)
@@ -41,6 +44,21 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         topic_prefix = "{prefix}/climate/{node}/{obj}/".format(prefix = self._prefix, node = self._node, obj = self._object)
         self.subscribe(topic_prefix + "mode_cmd_t", lambda x: self.set_mode(x.decode()))
         self.subscribe(topic_prefix + "temp_cmd_t", lambda x: self.set_temperature(float(x.decode())))
+
+        topic = "{prefix}/sensor/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
+        payload_template = {
+            "name":"{obj}",
+            "unique_id":"{obj}",
+            "state_t":"{prefix}/climate/{node}/{obj}/state",
+            "value_template":"{{{{ value_json.valve }}}}",
+            "unit_of_measurement":"%",
+            "device": device
+            }
+        payload_template_json = "{" + json.dumps(payload_template) + "}"
+        print("payload_template_json: ", payload_template_json)
+        payload = payload_template_json.format(prefix = self._prefix, node = self._node, obj = self._object)
+        print("payload: ", payload)
+        self._mqttc.publish(topic, payload=payload, qos=1, retain=False)
 
     def refresh(self):
         self.device.update()
