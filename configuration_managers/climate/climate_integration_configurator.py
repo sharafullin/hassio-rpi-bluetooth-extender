@@ -47,18 +47,18 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
 
         topic = "{prefix}/binary_sensor/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
         payload_template = {
+            "device_class":"heat",
             "name":"{obj}",
             "unique_id":"{obj}",
             "state_t":"{prefix}/climate/{node}/{obj}/state",
-            "value_template":"{{{{ value_json.valve }}}}",
-            "unit_of_measurement":"%",
+            "value_template":"{% if value_json.valve | float == 0 %}off{% else %}on{% endif %}",
             #"device": device
             }
         payload_template_json = "{" + json.dumps(payload_template) + "}"
         print("payload_template_json: ", payload_template_json)
         payload = payload_template_json.format(prefix = self._prefix, node = self._node, obj = self._object)
         print("payload: ", payload)
-        self._mqttc.publish(topic, payload='{"device_class": "heat", "name": "valve", "state_topic": "homeassistant/sensor/sensorBedroom2/state", "value_template": "{% if value_json.valve | float == 0 %}off{% else %}on{% endif %}" }', qos=1, retain=False)
+        self._mqttc.publish(topic, payload=payload, qos=1, retain=False)
 
     def refresh(self):
         self.device.update()
