@@ -49,7 +49,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         payload_template = {
             "name":"{obj}sensor",
             "unique_id":"{obj}sensor",
-            "state_t":"{prefix}/climate/{node}/{obj}/state",
+            "state_t":"{prefix}/climate/{node}/{obj}sensor/state",
             "value_template":"{{{{ value_json.valve }}}}",
             "unit_of_measurement":"%",
             #"device": device
