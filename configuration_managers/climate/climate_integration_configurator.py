@@ -45,11 +45,11 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         self.subscribe(topic_prefix + "mode_cmd_t", lambda x: self.set_mode(x.decode()))
         self.subscribe(topic_prefix + "temp_cmd_t", lambda x: self.set_temperature(float(x.decode())))
 
-        topic = "{prefix}/sensor/{node}/{obj}sensor/config".format(prefix = self._prefix, node = self._node, obj = self._object)
+        topic = "{prefix}/binary_sensor/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
         payload_template = {
-            "name":"{obj}sensor",
-            "unique_id":"{obj}sensor",
-            "state_t":"{prefix}/climate/{node}/{obj}sensor/state",
+            "name":"{obj}",
+            "unique_id":"{obj}",
+            "state_t":"{prefix}/climate/{node}/{obj}/state",
             "value_template":"{{{{ value_json.valve }}}}",
             "unit_of_measurement":"%",
             #"device": device
@@ -58,7 +58,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         print("payload_template_json: ", payload_template_json)
         payload = payload_template_json.format(prefix = self._prefix, node = self._node, obj = self._object)
         print("payload: ", payload)
-        self._mqttc.publish(topic, payload='{"device_class": "None", "name": "Temperature5", "state_topic": "homeassistant/sensor/sensorBedroom2/state", "unit_of_measurement": "°C", "value_template": "{{ value_json.temperature}}" }', qos=1, retain=False)
+        self._mqttc.publish(topic, payload='{"device_class": "heat", "name": "valve", "state_topic": "homeassistant/sensor/sensorBedroom2/state", "unit_of_measurement": "°C", "value_template": "{{ value_json.temperature}}" }', qos=1, retain=False)
 
     def refresh(self):
         self.device.update()
