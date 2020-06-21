@@ -45,10 +45,10 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         self.subscribe(topic_prefix + "mode_cmd_t", lambda x: self.set_mode(x.decode()))
         self.subscribe(topic_prefix + "temp_cmd_t", lambda x: self.set_temperature(float(x.decode())))
 
-        topic = "{prefix}/sensor/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
+        topic = "{prefix}/sensor/{node}/{obj}sensor/config".format(prefix = self._prefix, node = self._node, obj = self._object)
         payload_template = {
-            "name":"{obj}",
-            "unique_id":"{obj}",
+            "name":"{obj}sensor",
+            "unique_id":"{obj}sensor",
             "state_t":"{prefix}/climate/{node}/{obj}/state",
             "value_template":"{{{{ value_json.valve }}}}",
             "unit_of_measurement":"%",
