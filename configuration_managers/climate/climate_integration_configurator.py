@@ -12,7 +12,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         super(ClimateIntegrationConfigurator, self).configure(config)
         hvac_modes = self._device.hvac_modes
         device = {
-            #"name":"test" + self._object,
+            "name":"test" + self._object,
             "identifiers": self._object
         }
         topic = "{prefix}/climate/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
@@ -34,7 +34,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
             "max_temp":self._device.max_temp,
             "temp_step":self._device.precision,
             "modes":self._device.hvac_modes,
-            "device": device
+            #"device": device
             }
         payload_template_json = "{" + json.dumps(payload_template) + "}"
         print("payload_template_json: ", payload_template_json)
@@ -52,7 +52,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
             "state_t":"{prefix}/climate/{node}/{obj}/state",
             "value_template":"{{{{ value_json.valve }}}}",
             "unit_of_measurement":"%",
-            "device": device
+            #"device": device
             }
         payload_template_json = "{" + json.dumps(payload_template) + "}"
         print("payload_template_json: ", payload_template_json)
