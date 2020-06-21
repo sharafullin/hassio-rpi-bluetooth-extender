@@ -58,7 +58,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         print("payload_template_json: ", payload_template_json)
         payload = payload_template_json.format(prefix = self._prefix, node = self._node, obj = self._object)
         print("payload: ", payload)
-        self._mqttc.publish(topic, payload='{"device_class": "None", "name": "Temperature"5, "state_topic": "homeassistant/sensor/sensorBedroom2/state", "unit_of_measurement": "°C", "value_template": "{{ value_json.temperature}}" }', qos=1, retain=False)
+        self._mqttc.publish(topic, payload='{"device_class": "None", "name": "Temperature5", "state_topic": "homeassistant/sensor/sensorBedroom2/state", "unit_of_measurement": "°C", "value_template": "{{ value_json.temperature}}" }', qos=1, retain=False)
 
     def refresh(self):
         self.device.update()
