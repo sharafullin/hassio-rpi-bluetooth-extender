@@ -51,7 +51,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
             "name":"{obj}",
             "unique_id":"{obj}",
             "state_t":"{prefix}/climate/{node}/{obj}/state",
-            "value_template":"{% if value_json.valve | float == 0 %}off{% else %}on{% endif %}",
+            #"value_template":"{% if value_json.valve | float == 0 %}off{% else %}on{% endif %}",
             #"device": device
             }
         payload_template_json = "{" + json.dumps(payload_template) + "}"
