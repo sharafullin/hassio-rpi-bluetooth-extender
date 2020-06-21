@@ -32,6 +32,7 @@ def heartbeat():
                     device = Eq3BtSmartConfig("homeassistant", ip, found_device)
                     device.configure(conf.configuration)
                     devices.append(device)
+        print("devices: ", devices)
     s.enter(30, 1, heartbeat)
     for device in devices:
         device.refresh()

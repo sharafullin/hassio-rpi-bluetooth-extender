@@ -44,4 +44,8 @@ class IntegrationConfigurator:
 
     def _mqtt_on_message(self, _mqttc, _userdata, msg) -> None:
         """Message received callback."""
+        print("Command. Topic: ", msg.topic)
+        print("Command. Payload: ", msg.payload.decode())
         self._callbacks[msg.topic](msg.payload)
+        print("refresh")
+        self.refresh()

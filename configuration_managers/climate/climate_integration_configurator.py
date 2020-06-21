@@ -26,6 +26,8 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
             "temp_stat_tpl":"{{{{ value_json.target_temp }}}}",
             "curr_temp_t":"{prefix}/climate/{node}/{obj}/state",
             "curr_temp_tpl":"{{{{ value_json.current_temp }}}}",
+            "json_attr_t":"{prefix}/climate/{node}/{obj}/state",
+            "json_attr_tpl":"{{ value_json.valve | tojson }}",
             "min_temp":self._device.min_temp,
             "max_temp":self._device.max_temp,
             "temp_step":self._device.precision,
@@ -37,8 +39,8 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         print("payload: ", payload)
         self._mqttc.publish(topic, payload=payload, qos=1, retain=False)
         topic_prefix = "{prefix}/climate/{node}/{obj}/".format(prefix = self._prefix, node = self._node, obj = self._object)
-        self.subscribe(topic_prefix + "mode_cmd_t", lambda x: self.set_mode(x.payload.decode()))
-        self.subscribe(topic_prefix + "temp_cmd_t", lambda x: self.set_temperature(float(x.payload.decode())))
+        self.subscribe(topic_prefix + "mode_cmd_t", lambda x: self.set_mode(x.decode()))
+        self.subscribe(topic_prefix + "temp_cmd_t", lambda x: self.set_temperature(float(x.decode())))
 
     def refresh(self):
         self.device.update()
@@ -58,7 +60,9 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         self._mqttc.publish(topic, payload=payload_json, qos=1, retain=False)
 
     def set_mode(self, mode):
+        print("set_mode")
         self._device.set_hvac_mode(mode)
 
     def set_temperature(self, temperature):
+        print("set_temp")
         self._device.set_temperature(temperature = float(temperature))
