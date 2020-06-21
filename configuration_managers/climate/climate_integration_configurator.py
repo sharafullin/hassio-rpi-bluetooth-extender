@@ -12,7 +12,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
         super(ClimateIntegrationConfigurator, self).configure(config)
         hvac_modes = self._device.hvac_modes
         device = {
-            "name":"test" + self._object,
+            #"name":"test" + self._object,
             "identifiers": self._object
         }
         topic = "{prefix}/climate/{node}/{obj}/config".format(prefix = self._prefix, node = self._node, obj = self._object)
