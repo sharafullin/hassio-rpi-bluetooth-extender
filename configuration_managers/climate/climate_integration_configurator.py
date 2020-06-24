@@ -50,7 +50,7 @@ class ClimateIntegrationConfigurator(IntegrationConfigurator):
             "device_class":"heat",
             "name":"{obj}",
             "unique_id":"{obj}",
-            "state_t":"{prefix}/climate/{node}/{obj}/state",
+            "state_topic":"{prefix}/climate/{node}/{obj}/state",
             #"value_template":"{% if value_json.valve | float == 0 %}off{% else %}on{% endif %}",
             #"device": device
             }
